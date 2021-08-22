@@ -1,0 +1,186 @@
+snippet #!
+	#!/usr/bin/python
+
+snippet imp
+	import ${1:module}
+# Module Docstring
+snippet docs
+	'''
+	File: ${1:`Filename('$1.py', 'foo.py')`}
+	Author: ${2:`g:snips_author`}
+	Description: ${3}
+	'''
+snippet wh
+	while ${1:condition}:
+		${2:# code...}
+snippet for
+	for ${1:needle} in ${2:haystack}:
+		${3:# code...}
+# New Class
+snippet cl
+	class ${1:ClassName}(${2:object}):
+		"""${3:docstring for $1}"""
+		def __init__(self, ${4:arg}):
+			${5:super($1, self).__init__()}
+			self.$4 = $4
+			${6}
+# New Function
+snippet def
+	def ${1:fname}(${2:`indent('.') ? 'self' : ''`}):
+		"""${3:docstring for $1}"""
+		${4:pass}
+snippet deff
+	def ${1:fname}(${2:`indent('.') ? 'self' : ''`}):
+		${3}
+# New Method
+snippet defs
+	def ${1:mname}(self, ${2:arg}):
+		${3:pass}
+# New Property
+snippet property
+	def ${1:foo}():
+		doc = "${2:The $1 property.}"
+		def fget(self):
+			${3:return self._$1}
+		def fset(self, value):
+			${4:self._$1 = value}
+# Lambda
+snippet ld
+	${1:var} = lambda ${2:vars} : ${3:action}
+snippet .
+	self.
+snippet try Try/Except
+	try:
+		${1:pass}
+	except ${2:Exception}, ${3:e}:
+		${4:raise $3}
+snippet try Try/Except/Else
+	try:
+		${1:pass}
+	except ${2:Exception}, ${3:e}:
+		${4:raise $3}
+	else:
+		${5:pass}
+snippet try Try/Except/Finally
+	try:
+		${1:pass}
+	except ${2:Exception}, ${3:e}:
+		${4:raise $3}
+	finally:
+		${5:pass}
+snippet try Try/Except/Else/Finally
+	try:
+		${1:pass}
+	except ${2:Exception}, ${3:e}:
+		${4:raise $3}
+	else:
+		${5:pass}
+	finally:
+		${6:pass}
+
+# if __name__ == '__main__':
+snippet ifmain
+	def $1($2):
+	    """
+	    ${3:main function}
+	    """
+	    ${4:pass}
+
+	    $5
+
+
+	if "__main__"==__name__:
+		reload(sys)
+		sys.setdefaultencoding('utf-8')
+
+		${1:main}(${2:arg})
+# __magic__
+snippet _
+	__${1:init}__${2}
+
+snippet head
+	#!/usr/bin/env python
+	#coding: utf-8
+	#
+	# Last modified:
+
+	
+	"""
+	${1:insert module document header}
+	"""
+	__authors__ = ["${2:your_name} <$2@${3:aispeech}.com>"]
+	__version__ = "${4:0.0.1}"
+
+
+
+	${5}
+
+# author 
+snippet author 
+	"""
+	${1:insert module document header}
+	"""
+	__authors__ = ["${2:wxm71} <weixing.mei@${3:aispeech}.com>"]
+	__version__ = "${4:0.0.1}"
+
+
+
+	${5}
+
+
+# encoding 
+snippet encoding
+	reload(sys)
+	sys.setdefaultencoding("${1:utf-8}")
+	${2}
+
+# argparser
+snippet parser
+	parser = argparse.ArgumentParser()
+
+	${4:#add more arguments here}
+
+	grp = top.add_mutually_exclusive_group(required=True)
+	grp.add_argument("-f", dest="ifile", metavar="file", help="${1:input file}")
+	grp.add_argument("-i", dest="txt", metavar="txt", nargs=argparse.REMAINDER, help="${2:text to be processed}")
+
+	top = parser.add_argument_group("output control")
+	top.add_argument("-o", metavar="file", dest="ofile", help="${3:output file}")
+
+	args = parser.parse_args()
+
+	${5:#add you code here}
+
+	${6:# process input}
+	if args.txt:
+	    arrIn = args.txt
+	else:
+	    fid = codecs.open(args.ifile)
+	    lines = fid.readlines()
+	    fid.close()
+
+	    txt = " ".join(lines).replace("\n", "") 
+	    arrIn = txt.split()
+
+	${7:# output process}
+	if args.ofile:
+	    fid = codecs.open(args.ofile, "w", "utf-8")
+	else:
+	    fid = sys.stdout
+
+	${8:# you output process}
+
+	if args.ofile:
+	    fid.close()
+
+	${9:# other process}
+
+snippet fopen 
+	with codecs.open(${1:fname}, '${2:r}', '${3:utf-8}') as fid:
+	    while 1:
+		    line = fid.readline()
+		    if not line:
+			    break
+
+		    line = line.strip()
+		    ${4:# line process}

@@ -1,0 +1,59 @@
+#!/usr/bin/env python2
+# coding: utf-8
+#
+# Usage: 
+# Author: hanpu(hanpu.mwx@gmail.com)
+
+
+import sys
+import json
+
+
+def unpackDict(data):
+    for field in data.keys():
+        val = data.get(field)
+        if (unicode==type(val) or str==type(val)) and -1!=val.find("{"):
+            val = json.loads(val)
+            val = unpackField(val)
+        else:
+            val = unpackField(val)
+        data[field] = val
+    return data
+
+
+def unpackList(data):
+    return [unpackField(item) for item in data]
+
+
+def unpackStr(data):
+    try:
+        return json.loads(data)
+    except ValueError:
+        return data
+
+
+def unpackField(data):
+    if dict==type(data):
+        return unpackDict(data)
+    elif list==type(data):
+        return unpackList(data)
+    elif str==type(data) or unicode==type(data):
+        return unpackStr(data)
+    else:
+        return data
+
+
+
+if "__main__"==__name__:
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
+
+    if len(sys.argv)>1:
+        fid = codecs.open(sys.argv[1], 'r', 'utf-8')
+    else:
+        fid = sys.stdin
+
+    data = json.load(fid)
+    data = unpackField(data)
+
+    print(json.dumps(data, ensure_ascii=False, indent=4, sort_keys=True))

@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+# coding: utf-8
+#
+# Usage: 
+# Author: wxm71(weixing.mei@aispeech.com)
+
+import sys
+import json
+import codecs 
+
+if "__main__"==__name__:
+    if len(sys.argv)>1:
+        fid = codecs.open(sys.argv[1], 'r', 'utf-8')
+    else:
+        fid = sys.stdin
+
+    lines = fid.readlines()
+    if not lines or len(lines)<1:
+        sys.exit(0)
+    fid.close()
+
+    try:
+        data = json.loads('\n'.join(lines))
+        print(json.dumps(data, ensure_ascii=False, indent=4))
+    except Exception as err:
+        sys.stderr.write(err.message)

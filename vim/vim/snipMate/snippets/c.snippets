@@ -1,0 +1,240 @@
+# main()
+snippet main
+	int main(int argc, char *argv[])
+	{
+	    ${1}
+	    return 0;
+	}
+
+# this is a test 
+snippet test 
+	int main(${1:char **argc}) {
+	    $1
+	}
+	$2
+
+# #include <...>
+snippet inc include system file
+	#include <${1:stdio}.h>
+	${2}
+# #include "..."
+snippet Inc 
+	#include "${1:`Filename("$1.h")`}"${2}
+
+# #ifndef ... #define ... #endif
+snippet ndef 
+	#ifndef ___${1:PROJECTNAME}_${2:`toupper(Filename($2, 'FILENAME'))`}__HEADER___
+	#define ___$1_$2__HEADER___
+	${3}
+	#endif
+
+snippet def
+	#define 
+
+snippet ifdef
+	#ifdef ${1:FOO}
+	    ${2:#define }
+	#endif
+
+snippet #if
+	#if ${1:FOO}
+	    ${2}
+	#endif
+
+
+# Header Include-Guard
+# (the randomizer code is taken directly from TextMate; it could probably be
+# cleaner, I don't know how to do it in vim script)
+snippet once
+	#ifndef ${1:`toupper(Filename('', 'UNTITLED').'_'.system("/usr/bin/ruby -e 'print (rand * 2821109907455).round.to_s(36)'"))`}
+
+	#define $1
+
+	${2}
+
+	#endif /* end of include guard: $1 */
+
+
+# If Condition
+snippet if
+	if (${1:/* condition */}) {
+		${2:/* code */}
+	}
+
+
+snippet el
+	else {
+		${1}
+	}
+
+
+# Tertiary conditional
+snippet t
+	${1:/* condition */} ? ${2:a} : ${3:b}
+
+
+# Do While Loop
+snippet do
+	do {
+		${2:/* code */}
+	} while (${1:/* condition */});
+
+
+# While Loop
+snippet wh
+	while (${1:/* condition */}) {
+		${2:/* code */}
+	}
+
+
+# For Loop
+#	for (${2:i} = 0; $2 < ${1:count}; $2${3:++}) {
+snippet for
+	for (${1:i}=0; $1<${2:count}; ${3:+}$3$1) {
+		${4:/* code */}
+	}
+
+
+# Custom For Loop
+snippet forr
+	for (${1:i}=${2:0}; ${3:$1<10}; ${4:+}$4$1) {
+		${5:/* code */}
+	}
+
+
+# For loop with iterator
+snippet fori
+	for(${1:iter}=${2:vec}.begin(); $1!=$2.end(); ${3:+}$3$1){
+		${4:/* code */}
+	}
+
+
+# Function
+snippet fun
+	${1:void} ${2:function_name}(${3})
+	{
+		${4:/* code */}
+	}
+
+
+# Function Declaration
+snippet fund
+	${1:void} ${2:function_name}(${3});${4}
+
+
+# Typedef
+snippet td
+	typedef ${1:int} ${2:MyCustomType};${3}
+# Struct
+snippet st
+	struct ${1:`Filename('$1_t', 'name')`} {
+		${2:/* data */}
+	}${3: /* optional variable list */};${4}
+# Typedef struct
+snippet tds
+	typedef struct ${1:obj} {
+	    ${2:/* data */}
+	} $1_t;
+# Typdef enum
+snippet tde
+	typedef enum {
+		${1:/* data */}
+	} ${2:foo};
+
+
+# printf
+# unfortunately version this isn't as nice as TextMates's, given the lack of a
+# dynamic `...`
+snippet pr
+	printf("${1:%s}\n"${2});${3}
+
+
+# fprintf (again, this isn't as nice as TextMate's version, but it works)
+snippet fpr
+	fprintf(${1:stderr}, "${2:%s}\n"${3});${4}
+
+snippet .
+	[${1}]${2}
+
+snippet un
+	unsigned
+
+
+# comment
+snippet ///
+	////////////////////////////////////////////////////////////////////////////////
+	// ${1}
+	////////////////////////////////////////////////////////////////////////////////
+
+# check funcion call
+snippet cfc 
+	if (${1:0}${2:!=}${3:func}(${4:args}) ) {
+		${5:report_exit}(${6:"$3 call failed!"});
+	}
+	${7}
+
+
+# check a function return value 
+snippet cfr
+	${1:var} = ${2:func}(${3:args});
+	if (${4:-1}${5:=}=$1) {
+		${6:report_exit}(${7:"$2 call failed!"});
+	}
+	${8}
+
+# define a error report marco
+snippet de 
+	// format an error descripe string into a given buffer, which include file, line number, and error string
+	#define ${1:report_error}(fmt, ...) \
+		fprintf(stderr, "\e[31m ERROR: \n"); \
+		fprintf(stderr, fmt, ##__VAR_ARGS__); \
+		fprintf(stderr, "\n%s\t[file: %s, line: %d]", strerror(errno), __FILE__, __LINE__); \
+		fprintf(stderr, "\e[0m");
+
+	// almost the same with report_error, but alse exit the running of program
+	#define ${2:report_exit}(fmt, ...) report_error(fmt, ##__VAR_ARGS__); exit(EXIT_FAILURE);
+
+	${3}
+
+# exit failure 
+snippet ef
+	exit(EXIT_FAILURE);
+
+
+# exit success 
+snippet es
+	exit(EXIT_SUCCESS);
+
+# extern C 
+snippet extc 
+	#ifdef __cplusplus 
+	extern "C" {
+	#endif 
+
+	${1}
+
+	#ifdef __cplusplus  
+	};
+	#endif
+
+snippet free
+	free(${1:var});	$1 = NULL;
+	${2}
+snippet malloc
+	${1:objType}* ${2:name} = ($1*)malloc(sizeof($1));
+	${3}
+
+snippet calloc
+	${1:objType}* ${2:name} = ($1*)calloc(${3:1}, sizeof($1));
+	${4}
+	
+snippet delete 
+	void ${1:name}_delete($1_t** ${2:ptr}) {
+	    if(NULL==$2) {
+		return;
+	    } 
+
+	    ${3}
+	    $1_t* $1 = *$2;
+	    free(*$2);	*$2 = NULL;
+	}

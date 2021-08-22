@@ -1,0 +1,291 @@
+" An example for a vimrc file.
+"
+" Maintainer:	Bram Moolenaar <Bram@vim.org>
+" Last change:	2008 Jul 02
+"
+" To use it, copy it to
+"     for Unix and OS/2:  ~/.vimrc
+"	      for Amiga:  s:.vimrc
+"  for MS-DOS and Win32:  $VIM\_vimrc
+"	    for OpenVMS:  sys$login:.vimrc
+
+" When started as "evim", evim.vim will already have done these settings.
+if v:progname =~? "evim"
+  finish
+endif
+
+" Use Vim settings, rather then Vi settings (much better!).
+" This must be first, because it changes other options as a side effect.
+set nocompatible
+
+" allow backspacing over everything in insert mode
+set backspace=indent,eol,start
+
+if has("vms")
+  set nobackup		" do not keep a backup file, use versions instead
+else
+  set backup		" keep a backup file
+endif
+set history=50		" keep 50 lines of command line history
+set ruler		    " show the cursor position all the time
+set showcmd		    " display incomplete commands
+set incsearch		" do incremental searching
+
+" For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
+" let &guioptions = substitute(&guioptions, "t", "", "g")
+
+" Don't use Ex mode, use Q for formatting
+map Q gq
+
+" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+" so that you can undo CTRL-U after inserting a line break.
+inoremap <C-U> <C-G>u<C-U>
+
+" In many terminal emulators the mouse works just fine, thus enable it.
+if has('mouse')
+  set mouse=a
+endif
+
+" Switch syntax highlighting on, when the terminal has colors
+" Also switch on highlighting the last used search pattern.
+if &t_Co > 2 || has("gui_running")
+  syntax on
+  set hlsearch
+endif
+
+" Only do this part when compiled with support for autocommands.
+if has("autocmd")
+  " Enable file type detection.
+  " Use the default filetype settings, so that mail gets 'tw' set to 72,
+  " 'cindent' is on in C files, etc.
+  " Also load indent files, to automatically do language-dependent indenting.
+  filetype plugin indent on
+
+  " Put these in an autocmd group, so that we can delete them easily.
+  augroup vimrcEx
+  au!
+
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+" (happens when dropping a file on gvim).
+" Also don't do it when the mark is in the first line, that is the default
+" position when opening a file.
+autocmd BufReadPost *
+\ if line("'\"") > 1 && line("'\"") <= line("$") |
+\   exe "normal! g`\"" |
+\ endif
+
+augroup END
+
+else
+
+set autoindent		" always set autoindenting on
+
+endif " has("autocmd")
+
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from, thus the changes you made.
+" Only define it when not defined already.
+if !exists(":DiffOrig")
+command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+              \ | wincmd p | diffthis
+endif
+
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+filetype plugin indent on    " required
+
+
+"**********************************************************************************
+" My own configuration 
+"**********************************************************************************
+"
+" show line number 
+set nu
+
+" don't backup
+set nobackup
+
+" set the width of table width 
+set tabstop=8
+set shiftwidth=4
+set softtabstop=4
+set noexpandtab
+
+" set the wild menu 
+set wildmenu
+set wildmode=longest:full,list:full
+
+
+"**********************************************************
+" mapping 
+"**********************************************************
+let mapleader=" "
+
+" maps with configuration file 
+nnoremap <leader>ee :tabnew ~/.vimrc <CR>
+nnoremap <leader>ss :so ~/.vimrc <CR>
+
+map <Up> gk 
+map <Down> gj
+
+
+" ++++++++++++++++++++++++++
+" map for popup menu 
+" ++++++++++++++++++++++++++
+"
+" <Enter> means accept current complete 
+inoremap <expr> <CR>        pumvisible() ? "\<C-Y>" : "\<CR>"
+
+
+"**********************************************************
+" configuration for all plugins 
+"
+"**********************************************************
+" set rtp+=$HOME/.vim/vjde
+
+" ++++++++++++++++++++++++++
+" doxygen 
+" ++++++++++++++++++++++++++
+set runtimepath+=$HOME/.vim/doxygenToolkit/
+let g:DoxygenToolkit_briefTag_pos="<++>"
+let g:DoxygenToolkit_authorName="hanpu <hanpu.mwx@gmail.com>"
+
+
+" ++++++++++++++++++++++++++
+" taglist
+" ++++++++++++++++++++++++++
+set runtimepath+=$HOME/.vim/taglist/
+nnoremap <leader>tt :TlistToggle <CR>
+
+
+" ++++++++++++++++++++++++++
+" omnicppcomplete 
+" ++++++++++++++++++++++++++
+set runtimepath+=$HOME/.vim/omnicppcomplete/
+set runtimepath+=$HOME/.vim/omnicppcomplete/after
+
+" map for generate tags file 
+function! Gentags() 
+    exec "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
+endfunction
+map <C-F12> :call Gentags() <CR>
+map <C-F2> :make -j<CR>
+
+let OmniCpp_MayCompleteDot = 1
+let OmniCpp_MayCompleteScope = 1
+let OmniCpp_MayCompleteArrow = 1
+let OmniCpp_SelectFirstItem = 2
+let OmniCpp_ShowPrototypeInAbbr = 1
+let OmniCpp_DefaultNamespaces = ["std", "_GLIBCXX_STD"]
+
+" close the preview window after complete 
+autocmd CursorMovedI * if pumvisible()==0 | pclose | endif
+autocmd InsertLeave * if pumvisible()==0 | pclose | endif 
+
+
+" ++++++++++++++++++++++++++
+" autocomplpop 
+" ++++++++++++++++++++++++++
+set runtimepath+=$HOME/.vim/autocomplpop
+
+let g:acp_behaviorSnipmateLength = 1
+let g:acp_completeoptPreview = 1
+
+
+" ++++++++++++++++++++++++++
+" snipMate 
+" ++++++++++++++++++++++++++
+set runtimepath+=$HOME/.vim/snipMate
+set runtimepath+=$HOME/.vim/snipMate/after
+
+
+" load file type plugin for man 
+runtime ! ftplugin/man.vim
+
+set encoding=utf-8
+set fileencoding=utf-8
+set fileencodings=utf-8,chinese,latin-1
+
+
+iab lable label
+
+set foldclose=all
+
+" disable using mouse select text
+set mouse-=a
+
+
+" some key for make
+map <F2> <ESC> :wa <CR> :make <CR>
+imap <F2> <ESC> :wa <CR> :make <CR>
+map <F3> <ESC> :cn <CR>
+map <F4> <ESC> :cp <CR>
+map <F5> <ESC> :wa <CR> : exec "! chmod +x " . expand("%") <CR> :exec "e" <CR> :let b:buf_cmd = "! ./" . expand("%") <CR> : exec b:buf_cmd <CR>
+
+
+" make clean and make
+map mcam <ESC> :wa <CR> :make clean; make <CR>
+
+
+" map key for generate typedef from head file
+map <C-T> <ESC> :wa <CR> : let b:buf_cmd = "r !sed -n '/^struct/{ s=struct \\([a-z_A-Z]\\{1,\\}\\)[ \\t]*{=typedef struct \\1 \\1_t;=p};/^enum/{ s=enum \\([a-z_A-Z]\\{1,\\}\\)[ \\t]*{=typedef enum \\1 \\1_t;=p}' " .  expand("%") <CR> : exec b:buf_cmd <CR>
+
+
+set runtimepath+=$HOME/.vim/vimgdb_1.2
+
+source $HOME/.vim/hanpu/hanpu.vim
+
+set encoding=utf-8
+set fileencodings=ucs-bom,utf-8,gbk,gb18030,gb2312,big5,latin1
+set termencoding=utf-8
+set fileencoding=utf-8
+
+augroup Shebang
+    autocmd BufNewFile *.py 0put =\"#!/usr/bin/env python3\<nl># coding: utf-8\<nl>#\<nl># Usage: \<nl># Author: hanpu(hanpu.mwx@gmail.com)\<nl>\<nl>import sys\" | $ 
+    autocmd BufNewFile *.sh 0put =\"#!/usr/bin/env bash\<nl>#\<nl># Usage: \<nl># Author: hanpu(hanpu.mwx@gmail.com)\" | $ 
+    autocmd BufNewFile *.py exec 'set keywordprg=pydoc' 
+augroup END
+
+autocmd BufNewFile,BufRead *.conf exec 'set filetype=conf | set ai'
+autocmd BufNewFile,BufRead *.py exec 'set expandtab'
+
+set modeline
+set modelines=5
+
+" configuration for json
+au! BufRead,BufNewFile *.json set filetype=json 
+augroup json_autocmd 
+  autocmd! 
+  autocmd FileType json set autoindent 
+  autocmd FileType json set formatoptions=tcq2l 
+  autocmd FileType json set textwidth=78 shiftwidth=4
+  autocmd FileType json set softtabstop=4 tabstop=8 
+  autocmd FileType json set expandtab 
+  autocmd FileType json set foldmethod=syntax 
+  com! FormatJSON % ! $HOME/.vim/tools/jsonFormat
+  com! UnpackJSON % ! $HOME/.vim/tools/unpackJson
+augroup END
+
+
+" personal configuration for each direcotry
+if filereadable(".workspace.vim")
+    source .workspace.vim
+endif
+
+
+set rtp+=${HOME}/.vim/Vundle.vim
+call vundle#begin()
+    Plugin 'VundleVim/Vundle.vim'
+call vundle#end()
+
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+
+set updatetime=100
+
+nnoremap <leader>tmp : exec 'tabnew ' . tempname() <CR>

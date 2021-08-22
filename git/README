@@ -1,0 +1,11 @@
+=== INSTALL ===
+add blow lines to ~/.bashrc 
+
+# configuration of git
+if [[ -e ${HOME}/.gits/completion.sh ]]; then
+    source ${HOME}/.gits/completion.sh
+fi
+
+if [[ -e ${HOME}/.gits/prompt.sh ]]; then
+    source ${HOME}/.gits/prompt.sh
+fi

@@ -1,0 +1,150 @@
+# Read File Into Vector
+snippet readfile
+	std::vector<char> v;
+	if (FILE *${2:fp} = fopen(${1:"filename"}, "r")) {
+		char buf[1024];
+		while (size_t len = fread(buf, 1, sizeof(buf), $2))
+			v.insert(v.end(), buf, buf + len);
+		fclose($2);
+	}${3}
+
+
+# std::map
+snippet map
+	std::map<${1:key}, ${2:value}> map${3};
+
+
+# std::vector
+snippet vector
+	std::vector<${1:char}> v${2};
+
+
+# Namespace
+snippet ns
+	namespace ${1 :`Filename('', 'my')`} {
+		${2}
+	} /* $1 */
+
+
+# Class
+snippet cl
+	class ${1:`Filename('$1', 'name')`}: ${2:public} ${3:parentClass}
+	{
+	private:
+		${4:/* data */}
+
+	public:
+	$1 (${5:arguments});
+		virtual ~$1 ();
+	};
+
+# glut create 
+snippet initglut
+	glutInit(&argc, argv);
+
+	glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE);
+
+	glutInitWindowSize(${1:500, 500});
+	glutInitWindowPosition(100, 100);
+	glutCreateWindow(${2:"glut"});
+
+	glutDisplayFunc(${3:disp_cb});
+	glutReshapeFunc(${4:resize_cb});
+	glutKeyboardFunc(${5:keyboard_cb});
+	glutSpecialFunc(${6:special_cb});
+	glutMouseFunc(${7:mouse_cb});
+
+	${8:initGL()};
+
+	glutMainLoop();
+
+	$9
+
+# glut callback function
+snippet glutcb 
+	/** 
+	 * the resize callback function 
+	 */
+	static void resize_cb(int w, int h)
+	{
+		if (0==h) {
+			h = 1;
+		}
+
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+
+		glViewport(0, 0, w, h);
+
+		// add your own configuration
+		gluOrtho2D(0, 0, 100, 100);
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+	}
+
+
+	/**
+	 * callback function for special key, such as up, down, F1, F2, etc
+	 */
+	static void special_cb(int key, int x, int y)
+	{
+	 	switch(key) 
+		{
+			default:
+	 			break;
+		}
+
+		glutPostRedisplay();
+	}
+
+
+	static void keyboard_cb(unsigned char key, int x, int y)
+	{
+		switch(key) 
+		{
+			case 27:
+				exit(0);
+				break;
+
+			default:
+	 			break;
+		}
+
+	 	glut PostRedisplay();
+	}
+
+
+	/**
+	 * mouse wheel callback function, btn=3 means roll backward , and btn=4
+	 * means roll forward 
+	 */
+	static void mouse_cb(int btn, int state, int x, int y)
+	{
+		switch(btn) {
+			default:
+				break;
+		}
+
+		glutPostRedisplay();
+	}
+
+
+	static void disp_cb()
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glLoadIdentity();
+
+		// render the scene
+
+		// for double buffer, call this, else call glFlush()
+		glutSwapBuffers();
+	} 
+
+snippet ariaLaser
+	${1:parser}.addDefaultArgument("-lp 169.254.188.211");
+	$1.addDefaultArgument("-lpt tcp");
+	$1.addDefaultArgument("-lt lms1XX");
+	$1.addDefaultArgument("-connectLaser");
+
+	${2}
